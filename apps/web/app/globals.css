@@ -1,0 +1,35 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-paper: #f6f8fa;
+  --color-card: #ffffff;
+  --color-ink: #14213d;
+  --color-ink-2: #33415c;
+  --color-muted: #5b6b7f;
+  --color-line: #dde3ea;
+  --color-teal: #0e7c6b;
+  --color-teal-dark: #0a5f52;
+  --color-teal-soft: #e3f2ef;
+  --color-marker: #f5c542;
+  --color-marker-soft: #fdf1c7;
+  --color-low: #c2410c;
+  --color-low-soft: #fdebe1;
+  --color-mid: #a16207;
+  --color-mid-soft: #fbf0d9;
+  --color-high: #0e7c6b;
+  --font-display: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+  --font-sans: 'Public Sans Variable', system-ui, sans-serif;
+}
+
+html { color: var(--color-ink); background: var(--color-paper); }
+body { font-family: var(--font-sans); font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.015em; line-height: 1.15; }
+.num { font-variant-numeric: tabular-nums; }
+/* Resaltado tipo marcador para evidencias citadas */
+.marker { background: linear-gradient(transparent 55%, var(--color-marker-soft) 55%); box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+:focus-visible { outline: 2px solid var(--color-teal); outline-offset: 2px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+@media print {
+  .no-print { display: none !important; }
+  body { background: white; }
+}

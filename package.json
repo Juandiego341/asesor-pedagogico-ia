@@ -1,0 +1,12 @@
+{
+  "name": "asesor-pedagogico-inteligente",
+  "private": true,
+  "scripts": {
+    "install:all": "npm ci --prefix apps/api && npm ci --prefix apps/web",
+    "dev:api": "npm run dev --prefix apps/api",
+    "dev:web": "npm run dev --prefix apps/web",
+    "build": "npm run build --prefix apps/api && npm run build --prefix apps/web",
+    "test": "npm test --prefix apps/api",
+    "seed:demo": "npm run build --prefix apps/api && node apps/api/dist/seed.js --demo --evaluate"
+  }
+}

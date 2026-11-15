@@ -1,0 +1,47 @@
+# Blueprint de Render: crea la API (Docker) y la web (Next.js).
+# La base de datos es Neon: copia su cadena de conexión en DATABASE_URL.
+services:
+  - type: web
+    name: asesor-api
+    runtime: docker
+    rootDir: apps/api
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_EMAIL
+        value: admin@asesor.edu.co
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: AI_PROVIDER
+        value: demo
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OLLAMA_BASE_URL
+        sync: false
+      - key: GITHUB_TOKEN
+        sync: false
+  - type: web
+    name: asesor-web
+    runtime: node
+    rootDir: apps/web
+    plan: free
+    buildCommand: npm ci && npm run build && cp -r .next/static .next/standalone/.next/static
+    startCommand: node .next/standalone/server.js
+    envVars:
+      - key: API_URL
+        fromService:
+          type: web
+          name: asesor-api
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: HOSTNAME
+        value: 0.0.0.0
