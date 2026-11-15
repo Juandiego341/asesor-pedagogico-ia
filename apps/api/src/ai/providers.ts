@@ -66,11 +66,12 @@ interface StreamResult { text: string; usage?: Record<string, number>; model?: s
  * Llamada en streaming (SSE, formato OpenAI). El límite de espera se reinicia con cada fragmento recibido,
  * así un modelo lento pero activo no se corta; solo se aborta si deja de enviar datos o supera el máximo total.
  */
-async function postStream(url: string, body: unknown, headers: Record<string, string>, idleMs = 120_000, totalMs = 900_000): Promise<StreamResult> {
+async function postStream(url: string, body: unknown, headers: Record<string, string>, idleMs = 120_000, totalMs = 900_000, firstByteMs = 360_000): Promise<StreamResult> {
   const ctrl = new AbortController();
   let reason = '';
   const total = setTimeout(() => { reason = 'total'; ctrl.abort(); }, totalMs);
-  let idle = setTimeout(() => { reason = 'idle'; ctrl.abort(); }, idleMs);
+  // La espera del primer dato es mayor: incluye la cola del proveedor y la lectura de un texto largo
+  let idle = setTimeout(() => { reason = 'first'; ctrl.abort(); }, firstByteMs);
   const touch = () => { clearTimeout(idle); idle = setTimeout(() => { reason = 'idle'; ctrl.abort(); }, idleMs); };
   try {
     const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream', ...headers }, body: JSON.stringify(body), signal: ctrl.signal });
@@ -100,7 +101,7 @@ async function postStream(url: string, body: unknown, headers: Record<string, st
     if (!text.trim()) throw new Error('El modelo terminó sin devolver contenido');
     return { text, usage, model };
   } catch (e: any) {
-    if (e.name === 'AbortError') throw new Error(reason === 'idle' ? 'El modelo dejó de responder (sin datos durante 2 minutos)' : 'El modelo no terminó en 15 minutos');
+    if (e.name === 'AbortError') throw new Error(reason === 'first' ? 'El modelo dejó de responder (no empezó a responder en 6 minutos; el servicio puede estar saturado: prueba otro modelo o reduce el contexto máximo)' : reason === 'idle' ? 'El modelo dejó de responder (sin datos durante 2 minutos)' : 'El modelo no terminó en 15 minutos');
     throw e;
   } finally { clearTimeout(total); clearTimeout(idle); }
 }
