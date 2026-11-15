@@ -10,7 +10,7 @@ export const DEFAULT_MODELS: Record<ProviderId, string> = {
   anthropic: 'claude-sonnet-5-5',
   openai: 'gpt-5-mini',
   gemini: 'gemini-3.8-flash',
-  nvidia: 'minimaxai/minimax-m3.1-flash',
+  nvidia: 'nvidia/nemotron-3.5-super-vl-120b-a12b',
   ollama: 'qwen2.5:7b',
   demo: 'heuristico-v1',
 };
