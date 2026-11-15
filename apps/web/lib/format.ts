@@ -10,4 +10,4 @@ export const STATUS: Record<string, { label: string; tone: string }> = {
   PUBLISHED: { label: 'Publicada', tone: 'high' },
 };
 export const ROLE: Record<string, string> = { ADMIN: 'Administrador', TEACHER: 'Docente', STUDENT: 'Estudiante' };
-export const PROVIDER: Record<string, string> = { anthropic: 'Claude (Anthropic)', openai: 'OpenAI', gemini: 'Google Gemini', ollama: 'Ollama (local)', demo: 'Modo demo (sin LLM)' };
+export const PROVIDER: Record<string, string> = { anthropic: 'Claude (Anthropic)', openai: 'OpenAI', gemini: 'Google Gemini', nvidia: 'NVIDIA NIM', ollama: 'Ollama (local)', demo: 'Modo demo (sin LLM)' };

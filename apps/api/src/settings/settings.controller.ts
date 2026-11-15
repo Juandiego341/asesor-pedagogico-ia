@@ -11,7 +11,7 @@ import { AuditService } from '../common/audit.service';
 import { SANDBOX_CAPS, isolationSummary } from '../sandbox/sandbox';
 
 const aiSchema = z.object({
-  provider: z.enum(['anthropic', 'openai', 'gemini', 'ollama', 'demo']),
+  provider: z.enum(['anthropic', 'openai', 'gemini', 'nvidia', 'ollama', 'demo']),
   model: z.string().min(1),
   baseUrl: z.string().url().optional().or(z.literal('').transform(() => undefined)),
   temperature: z.number().min(0).max(1),

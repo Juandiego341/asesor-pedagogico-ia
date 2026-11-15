@@ -77,7 +77,7 @@ export class EvaluationEngine implements OnModuleInit {
         b.images.slice(0, 3).forEach((i) => imgs.push({ mime: i.mime, base64: i.data.toString('base64'), label: i.path }));
       }
       fl.filter((f) => f.kind === 'IMAGE' && f.size < 4_000_000).slice(0, 3).forEach((f) => imgs.push({ mime: f.mime, base64: f.data.toString('base64'), label: f.filename }));
-      const supportsImages = cfg.provider !== 'ollama' || /llava|vision|vl|gemma3|llama3\.2/i.test(cfg.model);
+      const supportsImages = !['ollama', 'nvidia'].includes(cfg.provider) || /llava|vision|vl|gemma3|llama-?3\.2|maverick|scout/i.test(cfg.model);
       const images = supportsImages ? imgs.slice(0, 4) : [];
 
       // 2. Verificación técnica en sandbox

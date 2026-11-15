@@ -1,6 +1,6 @@
 import { z, ZodType } from 'zod';
 
-export type ProviderId = 'anthropic' | 'openai' | 'gemini' | 'ollama' | 'demo';
+export type ProviderId = 'anthropic' | 'openai' | 'gemini' | 'nvidia' | 'ollama' | 'demo';
 export interface AiConfig { provider: ProviderId; model: string; baseUrl?: string; temperature: number; maxContextChars: number }
 export interface ImageInput { mime: string; base64: string; label: string }
 export interface GenerateArgs { system: string; prompt: string; jsonSchema: Record<string, unknown>; schemaName: string; images?: ImageInput[] }
@@ -10,6 +10,7 @@ export const DEFAULT_MODELS: Record<ProviderId, string> = {
   anthropic: 'claude-sonnet-5-5',
   openai: 'gpt-5-mini',
   gemini: 'gemini-2.5-flash',
+  nvidia: 'meta/llama-3.3-70b-instruct',
   ollama: 'qwen2.5:7b',
   demo: 'heuristico-v1',
 };
@@ -19,6 +20,7 @@ export function providerKeyStatus() {
     anthropic: !!process.env.ANTHROPIC_API_KEY,
     openai: !!process.env.OPENAI_API_KEY,
     gemini: !!process.env.GEMINI_API_KEY,
+    nvidia: !!process.env.NVIDIA_API_KEY,
     ollama: !!(process.env.OLLAMA_BASE_URL),
     demo: true,
   };
@@ -108,6 +110,30 @@ export async function callProvider(cfg: AiConfig, a: GenerateArgs): Promise<Gene
       }, { 'x-goog-api-key': key });
       const text = j.candidates?.[0]?.content?.parts?.map((p: any) => p.text || '').join('') || '';
       return { raw: parseJsonText(text), usage: { input: j.usageMetadata?.promptTokenCount, output: j.usageMetadata?.candidatesTokenCount }, model: cfg.model };
+    }
+    case 'nvidia': {
+      // NVIDIA NIM (build.nvidia.com) expone una API compatible con OpenAI
+      const key = process.env.NVIDIA_API_KEY;
+      if (!key) throw new Error('Falta NVIDIA_API_KEY');
+      const url = `${cfg.baseUrl || 'https://integrate.api.nvidia.com/v1'}/chat/completions`;
+      const system = `${a.system}
+
+Responde ÚNICAMENTE con un objeto JSON válido (sin texto adicional ni bloques de código) que cumpla este JSON Schema:
+${JSON.stringify(a.jsonSchema)}`;
+      const content: any = images.length
+        ? [{ type: 'text', text: a.prompt }, ...images.map((i) => ({ type: 'image_url', image_url: { url: `data:${i.mime};base64,${i.base64}` } }))]
+        : a.prompt;
+      const body = { model: cfg.model, temperature: cfg.temperature, max_tokens: 8192, messages: [{ role: 'system', content: system }, { role: 'user', content }] };
+      const headers = { Authorization: `Bearer ${key}`, Accept: 'application/json' };
+      let j: any;
+      try {
+        // Primero con salida guiada por el esquema; no todos los modelos la soportan
+        j = await post(url, { ...body, nvext: { guided_json: a.jsonSchema } }, headers);
+      } catch (e: any) {
+        if (!/respondió (400|422)/.test(e.message)) throw e;
+        j = await post(url, body, headers);
+      }
+      return { raw: parseJsonText(j.choices?.[0]?.message?.content || ''), usage: { input: j.usage?.prompt_tokens, output: j.usage?.completion_tokens }, model: j.model || cfg.model };
     }
     case 'ollama': {
       const base = cfg.baseUrl || process.env.OLLAMA_BASE_URL || 'http://localhost:11434';

@@ -78,7 +78,7 @@ function AiSettings() {
             <Field label="Temperatura" hint="Baja = más consistente."><Input type="number" step="0.05" min={0} max={1} value={cfg.temperature} onChange={(e) => setCfg({ ...cfg, temperature: Number(e.target.value) })} /></Field>
             <Field label="Contexto máximo (caracteres)" hint="Redúcelo para modelos locales."><Input type="number" step="1000" value={cfg.maxContextChars} onChange={(e) => setCfg({ ...cfg, maxContextChars: Number(e.target.value) })} /></Field>
           </div>
-          {cfg.provider !== 'demo' && !keys[cfg.provider] && <p className="rounded bg-marker-soft px-3 py-2 text-sm">Falta la variable de entorno {{ anthropic: 'ANTHROPIC_API_KEY', openai: 'OPENAI_API_KEY', gemini: 'GEMINI_API_KEY', ollama: 'OLLAMA_BASE_URL (o indica la URL base)' }[cfg.provider as string]} en el servidor de la API.</p>}
+          {cfg.provider !== 'demo' && !keys[cfg.provider] && <p className="rounded bg-marker-soft px-3 py-2 text-sm">Falta la variable de entorno {{ anthropic: 'ANTHROPIC_API_KEY', openai: 'OPENAI_API_KEY', gemini: 'GEMINI_API_KEY', nvidia: 'NVIDIA_API_KEY', ollama: 'OLLAMA_BASE_URL (o indica la URL base)' }[cfg.provider as string]} en el servidor de la API.</p>}
           <ErrorBox error={error} />
           {test && <p className={cx('rounded px-3 py-2 text-sm', test.ok ? 'bg-teal-soft text-teal-dark' : 'bg-low-soft text-low')}>{test.ok ? `Conexión correcta (${test.ms} ms, ${test.model}): ${test.response?.mensaje}` : `Falló: ${test.error}`}</p>}
           {saved && <p className="text-sm text-teal-dark">Configuración guardada. Las próximas evaluaciones usarán este modelo.</p>}
