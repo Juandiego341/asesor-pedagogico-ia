@@ -107,7 +107,7 @@ Cubren el cálculo de la nota, la validación y normalización de rúbricas, la 
 | Claude (Anthropic) | `ANTHROPIC_API_KEY` | Muy buena adherencia al esquema y lectura de código. Pago por tokens |
 | OpenAI | `OPENAI_API_KEY` o URL base compatible | Esquema JSON nativo. Pago por tokens |
 | Gemini | `GEMINI_API_KEY` | Capa gratuita con límites de uso |
-| NVIDIA NIM | `NVIDIA_API_KEY` (build.nvidia.com) | API compatible con OpenAI; créditos gratuitos al registrarse. Modelo por defecto `meta/llama-3.3-70b-instruct` |
+| NVIDIA NIM | `NVIDIA_API_KEY` (build.nvidia.com) | API compatible con OpenAI; créditos gratuitos al registrarse. Modelo por defecto `minimaxai/minimax-m3.1-flash`; el nombre debe incluir la organización |
 | Ollama | Servidor con el modelo descargado (`OLLAMA_BASE_URL`) | Sin costo por uso. Se recomiendan modelos de 7B o más y reducir el contexto máximo |
 | Demo | Ninguno | Heurística para probar el flujo; no reemplaza un LLM |
 

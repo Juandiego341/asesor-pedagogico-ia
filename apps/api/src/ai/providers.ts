@@ -9,8 +9,8 @@ export interface GenerateResult { raw: unknown; usage?: Record<string, number>; 
 export const DEFAULT_MODELS: Record<ProviderId, string> = {
   anthropic: 'claude-sonnet-5-5',
   openai: 'gpt-5-mini',
-  gemini: 'gemini-2.5-flash',
-  nvidia: 'meta/llama-3.3-70b-instruct',
+  gemini: 'gemini-3.8-flash',
+  nvidia: 'minimaxai/minimax-m3.1-flash',
   ollama: 'qwen2.5:7b',
   demo: 'heuristico-v1',
 };
@@ -130,6 +130,7 @@ ${JSON.stringify(a.jsonSchema)}`;
         // Primero con salida guiada por el esquema; no todos los modelos la soportan
         j = await post(url, { ...body, nvext: { guided_json: a.jsonSchema } }, headers);
       } catch (e: any) {
+        if (/respondió 404/.test(e.message)) throw new Error(`NVIDIA no encontró el modelo "${cfg.model}". Usa el identificador completo con su organización, tal como aparece en build.nvidia.com (por ejemplo minimaxai/minimax-m3.1-flash), y deja vacía la URL base.`);
         if (!/respondió (400|422)/.test(e.message)) throw e;
         j = await post(url, body, headers);
       }
