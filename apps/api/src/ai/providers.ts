@@ -60,8 +60,53 @@ async function post(url: string, body: unknown, headers: Record<string, string>,
   } finally { clearTimeout(t); }
 }
 
+interface StreamResult { text: string; usage?: Record<string, number>; model?: string }
+
+/**
+ * Llamada en streaming (SSE, formato OpenAI). El límite de espera se reinicia con cada fragmento recibido,
+ * así un modelo lento pero activo no se corta; solo se aborta si deja de enviar datos o supera el máximo total.
+ */
+async function postStream(url: string, body: unknown, headers: Record<string, string>, idleMs = 120_000, totalMs = 900_000): Promise<StreamResult> {
+  const ctrl = new AbortController();
+  let reason = '';
+  const total = setTimeout(() => { reason = 'total'; ctrl.abort(); }, totalMs);
+  let idle = setTimeout(() => { reason = 'idle'; ctrl.abort(); }, idleMs);
+  const touch = () => { clearTimeout(idle); idle = setTimeout(() => { reason = 'idle'; ctrl.abort(); }, idleMs); };
+  try {
+    const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream', ...headers }, body: JSON.stringify(body), signal: ctrl.signal });
+    if (!r.ok) throw new Error(`El proveedor respondió ${r.status}: ${(await r.text()).slice(0, 400)}`);
+    const reader = r.body!.getReader();
+    const dec = new TextDecoder();
+    let buf = '', text = '', model: string | undefined, usage: Record<string, number> | undefined;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      touch();
+      buf += dec.decode(value, { stream: true });
+      let nl: number;
+      while ((nl = buf.indexOf('\n')) >= 0) {
+        const line = buf.slice(0, nl).trim(); buf = buf.slice(nl + 1);
+        if (!line.startsWith('data:')) continue;
+        const data = line.slice(5).trim();
+        if (data === '[DONE]') continue;
+        try {
+          const j = JSON.parse(data);
+          model = j.model || model;
+          text += j.choices?.[0]?.delta?.content || '';
+          if (j.usage) usage = { input: j.usage.prompt_tokens, output: j.usage.completion_tokens };
+        } catch { /* fragmento incompleto o comentario */ }
+      }
+    }
+    if (!text.trim()) throw new Error('El modelo terminó sin devolver contenido');
+    return { text, usage, model };
+  } catch (e: any) {
+    if (e.name === 'AbortError') throw new Error(reason === 'idle' ? 'El modelo dejó de responder (sin datos durante 2 minutos)' : 'El modelo no terminó en 15 minutos');
+    throw e;
+  } finally { clearTimeout(total); clearTimeout(idle); }
+}
+
 function parseJsonText(text: string) {
-  const t = text.trim().replace(/^```(json)?/i, '').replace(/```$/, '').trim();
+  const t = text.replace(/<think>[\s\S]*?<\/think>/gi, '').trim().replace(/^```(json)?/i, '').replace(/```$/, '').trim();
   try { return JSON.parse(t); } catch {
     const a = t.indexOf('{'), b = t.lastIndexOf('}');
     if (a >= 0 && b > a) return JSON.parse(t.slice(a, b + 1));
@@ -123,18 +168,18 @@ ${JSON.stringify(a.jsonSchema)}`;
       const content: any = images.length
         ? [{ type: 'text', text: a.prompt }, ...images.map((i) => ({ type: 'image_url', image_url: { url: `data:${i.mime};base64,${i.base64}` } }))]
         : a.prompt;
-      const body = { model: cfg.model, temperature: cfg.temperature, max_tokens: 8192, messages: [{ role: 'system', content: system }, { role: 'user', content }] };
-      const headers = { Authorization: `Bearer ${key}`, Accept: 'application/json' };
-      let j: any;
+      const body = { model: cfg.model, temperature: cfg.temperature, max_tokens: 16384, stream: true, messages: [{ role: 'system', content: system }, { role: 'user', content }] };
+      const headers = { Authorization: `Bearer ${key}` };
+      let r: StreamResult;
       try {
-        // Primero con salida guiada por el esquema; no todos los modelos la soportan
-        j = await post(url, { ...body, nvext: { guided_json: a.jsonSchema } }, headers);
+        // Se pide salida JSON; si el modelo no acepta response_format, se repite sin él
+        r = await postStream(url, { ...body, response_format: { type: 'json_object' } }, headers);
       } catch (e: any) {
         if (/respondió 404/.test(e.message)) throw new Error(`NVIDIA no encontró el modelo "${cfg.model}". Usa el identificador completo con su organización, tal como aparece en build.nvidia.com (por ejemplo minimaxai/minimax-m3.1-flash), y deja vacía la URL base.`);
         if (!/respondió (400|422)/.test(e.message)) throw e;
-        j = await post(url, body, headers);
+        r = await postStream(url, body, headers);
       }
-      return { raw: parseJsonText(j.choices?.[0]?.message?.content || ''), usage: { input: j.usage?.prompt_tokens, output: j.usage?.completion_tokens }, model: j.model || cfg.model };
+      return { raw: parseJsonText(r.text), usage: r.usage, model: r.model || cfg.model };
     }
     case 'ollama': {
       const base = cfg.baseUrl || process.env.OLLAMA_BASE_URL || 'http://localhost:11434';

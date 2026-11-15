@@ -31,7 +31,7 @@ export class AiService {
         raw = r.raw; usage = r.usage; model = r.model;
       } catch (e) {
         errors.push(`Intento ${attempt}: ${(e as Error).message}`);
-        if (attempt === 3 || /Falta|401|403|404/.test((e as Error).message)) throw new Error(errors.join(' | '));
+        if (attempt === 3 || /Falta|401|403|404|no terminó en|dejó de responder/.test((e as Error).message)) throw new Error(errors.join(' | '));
         await new Promise((res) => setTimeout(res, 1500 * attempt));
         continue;
       }

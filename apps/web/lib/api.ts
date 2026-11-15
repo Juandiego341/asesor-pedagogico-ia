@@ -15,7 +15,12 @@ export async function api<T = any>(path: string, opts: { method?: string; body?:
   const ct = r.headers.get('content-type') || '';
   const data = ct.includes('json') ? await r.json() : await r.text();
   if (!r.ok) {
-    const msg = typeof data === 'object' ? (Array.isArray(data.message) ? data.message.join('. ') : data.message) : String(data);
+    const html = typeof data === 'string' && /<(!doctype|html|body)/i.test(data);
+    const msg = typeof data === 'object' ? (Array.isArray(data.message) ? data.message.join('. ') : data.message)
+      : html ? ([502, 503, 504].includes(r.status)
+        ? 'El servidor de la API no está disponible en este momento (puede estar arrancando o reiniciándose tras un despliegue). Espera un minuto y recarga la página.'
+        : `Error ${r.status} del servidor.`)
+      : String(data).slice(0, 500);
     throw new ApiError(r.status, msg || `Error ${r.status}`, typeof data === 'object' ? data.errors : undefined);
   }
   return data as T;
