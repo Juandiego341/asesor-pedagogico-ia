@@ -8,7 +8,12 @@ export async function api<T = any>(path: string, opts: { method?: string; body?:
   const init: RequestInit = { method: opts.method || (opts.body || opts.form ? 'POST' : 'GET'), credentials: 'include', headers: {} };
   if (opts.form) init.body = opts.form;
   else if (opts.body !== undefined) { init.body = JSON.stringify(opts.body); (init.headers as Record<string, string>)['Content-Type'] = 'application/json'; }
-  const r = await fetch(`/api${path}`, init);
+  let r = await fetch(`/api${path}`, init);
+  // Las consultas (GET) se reintentan mientras la API termina de despertar
+  for (let i = 0; i < 3 && init.method === 'GET' && [502, 503, 504].includes(r.status); i++) {
+    await new Promise((res) => setTimeout(res, 5000));
+    r = await fetch(`/api${path}`, init);
+  }
   if (r.status === 401 && typeof window !== 'undefined' && !path.startsWith('/auth/')) {
     window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
   }

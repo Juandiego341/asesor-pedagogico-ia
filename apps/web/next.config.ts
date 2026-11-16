@@ -5,6 +5,8 @@ const api = process.env.API_URL || 'http://localhost:4000';
 const config: NextConfig = {
   output: 'standalone',
   poweredByHeader: false,
+  // En el plan gratuito de Render la API se duerme y tarda ~30-60 s en despertar; el proxy por defecto corta a los 30 s
+  experimental: { proxyTimeout: 180_000 },
   async rewrites() {
     // El navegador solo habla con este dominio; la cookie de sesión queda como cookie de primera parte.
     return [{ source: '/api/:path*', destination: `${api}/api/:path*` }];
