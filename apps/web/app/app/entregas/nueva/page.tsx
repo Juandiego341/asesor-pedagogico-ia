@@ -35,7 +35,7 @@ function Form() {
     if (notes) form.append('notes', notes);
     if (report) form.append('report', report);
     if (mode === 'zip' && code) form.append('code', code);
-    if (mode === 'github') form.append('repoUrl', repoUrl);
+    if (mode === 'github' && repoUrl.trim()) form.append('repoUrl', repoUrl);
     extras.forEach((f) => form.append('extras', f));
     try {
       setStep(mode === 'github' ? 'Descargando repositorio y leyendo el informe…' : 'Subiendo y leyendo archivos…');
@@ -58,13 +58,13 @@ function Form() {
             <Input type="file" accept="application/pdf,.pdf" required onChange={(e) => setReport(e.target.files?.[0] ?? null)} />
           </Field>
           <fieldset>
-            <legend className="text-sm font-medium mb-2">Código fuente</legend>
+            <legend className="text-sm font-medium mb-2">Código fuente{lab && !lab.requiresCode ? ' (opcional: este laboratorio es solo informe)' : ''}</legend>
             <div className="flex gap-4 mb-2 text-sm">
               <label className="flex items-center gap-2"><input type="radio" checked={mode === 'zip'} onChange={() => setMode('zip')} />Archivo ZIP</label>
               <label className="flex items-center gap-2"><input type="radio" checked={mode === 'github'} onChange={() => setMode('github')} />Repositorio de GitHub</label>
             </div>
-            {mode === 'zip' ? <Input type="file" accept=".zip" required onChange={(e) => setCode(e.target.files?.[0] ?? null)} />
-              : <Input type="url" required placeholder="https://github.com/usuario/repositorio" value={repoUrl} onChange={(e) => setRepoUrl(e.target.value)} />}
+            {mode === 'zip' ? <Input type="file" accept=".zip" required={!lab || lab.requiresCode} onChange={(e) => setCode(e.target.files?.[0] ?? null)} />
+              : <Input type="url" required={!lab || lab.requiresCode} placeholder="https://github.com/usuario/repositorio" value={repoUrl} onChange={(e) => setRepoUrl(e.target.value)} />}
             <p className="text-xs text-muted mt-1">{mode === 'github' ? 'Debe ser público. Se guarda una copia con el commit exacto para trazabilidad.' : 'Se ignoran node_modules, .git, entornos virtuales y binarios.'}</p>
           </fieldset>
           <Field label="Evidencias opcionales" hint="Imágenes, diagramas, mapas mentales, presentaciones (PPTX), documentos o video.">

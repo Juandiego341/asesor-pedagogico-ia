@@ -7,6 +7,7 @@ export function LabForm({ cohorts, initial, onSaved, onCancel }: { cohorts: any[
   const [f, setF] = useState({
     cohortId: initial?.cohortId ?? cohorts[0]?.id, order: initial?.order ?? 1, title: initial?.title ?? '',
     description: initial?.description ?? '', objectives: initial?.objectives ?? '', topics: (initial?.topics ?? []).join('\n'),
+    requiresCode: initial?.requiresCode ?? true,
   });
   const [error, setError] = useState<unknown>(null);
   const [saving, setSaving] = useState(false);
@@ -26,6 +27,7 @@ export function LabForm({ cohorts, initial, onSaved, onCancel }: { cohorts: any[
       <Field label="Descripción del laboratorio"><Textarea required rows={3} value={f.description} onChange={(e) => setF({ ...f, description: e.target.value })} /></Field>
       <Field label="Objetivos"><Textarea rows={3} value={f.objectives} onChange={(e) => setF({ ...f, objectives: e.target.value })} /></Field>
       <Field label="Temáticas de IA" hint="Una por línea. Se usan para clasificar el mapa de competencias."><Textarea rows={4} value={f.topics} onChange={(e) => setF({ ...f, topics: e.target.value })} /></Field>
+      <label className="flex gap-2 text-sm"><input type="checkbox" checked={f.requiresCode} onChange={(e) => setF({ ...f, requiresCode: e.target.checked })} />La entrega requiere código fuente (ZIP o GitHub). Desmárcalo si el laboratorio es solo informe.</label>
       <ErrorBox error={error} />
       <div className="flex gap-2"><Button type="submit" loading={saving}>{initial ? 'Guardar cambios' : 'Crear laboratorio'}</Button>{onCancel && <Button type="button" variant="ghost" onClick={onCancel}>Cancelar</Button>}</div>
     </form>

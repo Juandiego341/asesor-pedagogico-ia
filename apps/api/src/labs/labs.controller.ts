@@ -13,6 +13,7 @@ const labSchema = z.object({
   description: z.string().min(10, 'Describe el laboratorio (mínimo 10 caracteres)'),
   objectives: z.string().default(''),
   topics: z.array(z.string().min(1)).default([]),
+  requiresCode: z.boolean().default(true),
 });
 
 @Controller()

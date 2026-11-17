@@ -113,6 +113,19 @@ Cubren el cálculo de la nota, la validación y normalización de rúbricas, la 
 
 Una evaluación típica envía entre 20 000 y 40 000 tokens de entrada (rúbrica, informe y código recortado) y recibe entre 3 000 y 6 000 de salida.
 
+## Limitaciones y trabajo futuro
+
+| Tema | Estado actual | Trabajo futuro |
+|---|---|---|
+| Videos | Se guardan como evidencia con su huella SHA-256, pero no se analizan. | Transcribir el audio (por ejemplo con Whisper) y añadir la transcripción como evidencia citable. |
+| Presentaciones e imágenes | De las presentaciones (PPTX) se extrae el texto. Las imágenes solo se analizan con modelos con visión (por ejemplo `nvidia/nemotron-3.5-super-vl-120b-a12b`, Claude, GPT o Gemini). | Convertir las diapositivas a imagen para que los modelos con visión analicen también diagramas y gráficas. |
+| Aislamiento del código | En Render, el contenedor no permite `unshare -n`, así que el sandbox usa el respaldo: usuario sin privilegios, límites de memoria, CPU y procesos, y bloqueo de red en el intérprete. | Desplegar la API en un servidor propio con Docker para aislar por completo la red. |
+| Recuperación de contraseña | El administrador restablece las contraseñas desde Administración → Usuarios. | Enviar un enlace de recuperación por correo (por ejemplo con Resend o SMTP). |
+| Almacenamiento | Los archivos se guardan en PostgreSQL. El plan gratuito de Neon (0,5 GB) basta para la demostración. | Mover los archivos a un almacenamiento de objetos (S3, R2) y guardar en la base solo la referencia y el hash. |
+| Disponibilidad | En el plan gratuito, Render duerme los servicios tras 15 minutos sin tráfico. La acción `.github/workflows/mantener-despierto.yml` los mantiene despiertos de 7:00 a 18:00 (hora de Colombia), dentro de las 750 horas gratuitas al mes. | Con un plan de pago, los servicios quedan siempre activos. |
+
+Los laboratorios que son solo informe se configuran desmarcando "La entrega requiere código fuente" en el formulario del laboratorio. En ese caso la entrega acepta solo el PDF y la evaluación no penaliza la ausencia de código.
+
 ## Estructura
 
 ```

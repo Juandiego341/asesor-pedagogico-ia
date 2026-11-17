@@ -161,7 +161,7 @@ Título: ${lab.title}
 Descripción: ${lab.description}
 Objetivos: ${lab.objectives}
 Temáticas declaradas: ${lab.topics.join('; ') || 'no especificadas'}
-
+${lab.requiresCode ? '' : 'Entrega: este laboratorio NO requiere código; evalúa con base en el informe y las demás evidencias, sin penalizar la ausencia de código.\n'}
 # RÚBRICA (competencias, criterios y niveles)
 ${rubricText}
 

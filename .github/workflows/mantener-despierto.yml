@@ -1,0 +1,30 @@
+# Mantiene despiertos los servicios gratuitos de Render (se duermen tras 15 min sin tráfico).
+# Una sola petición a la web por /api/health despierta la web y, a través de su proxy, la API.
+#
+# Horario: cada 5 minutos de 7:00 a 17:59 hora de Colombia (12:00–22:59 UTC).
+# El plan gratuito de Render da 750 horas al mes para todos los servicios: dos servicios
+# encendidos 24/7 suman ~1.490 h y quedarían suspendidos. 11 h/día × 2 servicios ≈ 680 h/mes.
+# Para cambiar el horario, edita la línea "cron" (está en UTC: hora de Colombia + 5).
+name: Mantener servidor despierto
+
+on:
+  schedule:
+    - cron: '*/5 12-22 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Despertar web y API
+        env:
+          WEB_URL: ${{ vars.WEB_URL || 'https://asesor-web.onrender.com' }}
+        run: |
+          for i in 1 2 3; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 120 "$WEB_URL/api/health" || true)
+            echo "Intento $i: HTTP $code"
+            [ "$code" = "200" ] && exit 0
+            sleep 20
+          done
+          echo "El servidor no respondió con 200"; exit 1

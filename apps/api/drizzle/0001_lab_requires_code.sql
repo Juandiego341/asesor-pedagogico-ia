@@ -1,0 +1,1 @@
+ALTER TABLE "labs" ADD COLUMN "requires_code" boolean DEFAULT true NOT NULL;

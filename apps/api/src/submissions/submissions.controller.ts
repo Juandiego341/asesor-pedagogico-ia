@@ -61,7 +61,7 @@ export class SubmissionsController {
     if (!report) throw new BadRequestException('Adjunta el informe en PDF');
     if (!report.originalname.toLowerCase().endsWith('.pdf')) throw new BadRequestException('El informe debe ser un archivo PDF');
     const code = up?.code?.[0];
-    if (!code && !d.repoUrl) throw new BadRequestException('Adjunta el código fuente en ZIP o indica el repositorio de GitHub');
+    if (lab.requiresCode && !code && !d.repoUrl) throw new BadRequestException('Adjunta el código fuente en ZIP o indica el repositorio de GitHub');
     if (d.repoUrl && !parseGithubUrl(d.repoUrl)) throw new BadRequestException('El enlace debe ser de un repositorio de GitHub (https://github.com/usuario/repositorio)');
 
     const records: (typeof files.$inferInsert)[] = [];

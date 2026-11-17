@@ -37,6 +37,7 @@ export const labs = pgTable('labs', {
   description: text('description').notNull(),
   objectives: text('objectives').notNull().default(''),
   topics: jsonb('topics').$type<string[]>().notNull().default([]),
+  requiresCode: boolean('requires_code').notNull().default(true),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
