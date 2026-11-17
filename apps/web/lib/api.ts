@@ -9,8 +9,10 @@ export async function api<T = any>(path: string, opts: { method?: string; body?:
   if (opts.form) init.body = opts.form;
   else if (opts.body !== undefined) { init.body = JSON.stringify(opts.body); (init.headers as Record<string, string>)['Content-Type'] = 'application/json'; }
   let r = await fetch(`/api${path}`, init);
-  // Las consultas (GET) se reintentan mientras la API termina de despertar
-  for (let i = 0; i < 3 && init.method === 'GET' && [502, 503, 504].includes(r.status); i++) {
+  // Mientras la API despierta (plan gratuito de Render), la pasarela responde 502/503/504 sin JSON:
+  // la petición no llegó a la API, así que se reintenta con cualquier método (incluido el inicio de sesión) hasta ~90 s.
+  const gateway = (x: Response) => [502, 503, 504].includes(x.status) && !(x.headers.get('content-type') || '').includes('json');
+  for (let i = 0; i < 18 && gateway(r); i++) {
     await new Promise((res) => setTimeout(res, 5000));
     r = await fetch(`/api${path}`, init);
   }
