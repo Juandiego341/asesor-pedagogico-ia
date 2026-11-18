@@ -40,7 +40,7 @@ export class LabsController {
   async createCohort(@Body() body: unknown) {
     const d = parse(z.object({ number: z.number().int().min(1), name: z.string().min(2), period: z.string().optional() }), body);
     const [c] = await this.db.insert(cohorts).values(d).onConflictDoNothing().returning();
-    if (!c) throw new ConflictException('Ya existe esa corte');
+    if (!c) throw new ConflictException('Ya existe ese corte');
     return c;
   }
 

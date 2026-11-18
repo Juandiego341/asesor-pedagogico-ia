@@ -20,7 +20,7 @@ export function LabForm({ cohorts, initial, onSaved, onCancel }: { cohorts: any[
   return (
     <form onSubmit={submit} className="space-y-4">
       <div className="grid sm:grid-cols-[1fr_120px] gap-4">
-        <Field label="corte"><Select value={f.cohortId} onChange={(e) => setF({ ...f, cohortId: e.target.value })}>{cohorts.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</Select></Field>
+        <Field label="Corte"><Select value={f.cohortId} onChange={(e) => setF({ ...f, cohortId: e.target.value })}>{cohorts.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</Select></Field>
         <Field label="Orden"><Input type="number" min={1} value={f.order} onChange={(e) => setF({ ...f, order: e.target.value })} /></Field>
       </div>
       <Field label="Título"><Input required value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} /></Field>

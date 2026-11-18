@@ -21,7 +21,7 @@ export async function ensureBootstrap() {
       await db.insert(users).values({ email, name: 'Administrador', role: 'ADMIN', passwordHash: await bcrypt.hash(password, 10) });
       console.log(`Administrador inicial creado: ${email}`);
     }
-    await db.insert(cohorts).values([{ number: 1, name: 'corte 1', period: '2026-1' }, { number: 2, name: 'corte 2', period: '2026-2' }]).onConflictDoNothing();
+    await db.insert(cohorts).values([{ number: 1, name: 'Corte 1', period: '2026-1' }, { number: 2, name: 'Corte 2', period: '2026-2' }]).onConflictDoNothing();
     const [{ t }] = await db.select({ t: count() }).from(teamMembers);
     if (t === 0) {
       await db.insert(teamMembers).values([

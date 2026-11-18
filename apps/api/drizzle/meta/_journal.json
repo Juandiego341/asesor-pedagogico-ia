@@ -15,6 +15,13 @@
       "when": 1794935552658,
       "tag": "0001_lab_requires_code",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794960843697,
+      "tag": "0002_renombrar_cohorte_a_corte",
+      "breakpoints": true
     }
   ]
 }
