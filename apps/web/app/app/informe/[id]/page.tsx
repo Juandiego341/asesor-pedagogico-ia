@@ -20,10 +20,10 @@ export default function Report({ params }: { params: Promise<{ id: string }> }) 
   if (r.error) return <ErrorBox error={r.error} />;
   const d = r.data;
   const plan = async () => { setBusy(true); setError(null); try { await api(`/reports/student/${id}/plan${q}`, { method: 'POST' }); await r.reload(); } catch (e) { setError(e); } finally { setBusy(false); } };
-  const series = d.labs.filter((l: any) => l.grade !== null).map((l: any) => ({ name: `L${l.order}`, title: l.title, nota: l.grade, cohorte: l.cohort }));
+  const series = d.labs.filter((l: any) => l.grade !== null).map((l: any) => ({ name: `L${l.order}`, title: l.title, nota: l.grade, corte: l.cohort }));
   return (
     <>
-      <PageHead title="Informe integrado del aprendizaje" subtitle={`${d.student.name} · Cohortes 1 y 2 · Generado ${fmtDate(d.generatedAt)}`}
+      <PageHead title="Informe integrado del aprendizaje" subtitle={`${d.student.name} · cortes 1 y 2 · Generado ${fmtDate(d.generatedAt)}`}
         actions={<>
           {isStaff && <label className="flex items-center gap-2 text-sm mr-2"><input type="checkbox" checked={inc} onChange={(e) => setInc(e.target.checked)} />Incluir valoraciones sin publicar</label>}
           <Link href={`/app/mapa/${id}`} className="rounded-md border border-line bg-card px-4 py-2 font-medium hover:border-ink-2">Mapa de competencias</Link>
@@ -58,7 +58,7 @@ export default function Report({ params }: { params: Promise<{ id: string }> }) 
           <ul className="divide-y divide-line">
             {d.labs.map((l: any) => (
               <li key={l.labId} className="py-2.5 flex items-center justify-between gap-3">
-                <span className="min-w-0"><span className="block truncate text-sm font-medium">{l.title}</span><span className="text-xs text-muted">Cohorte {l.cohort}</span></span>
+                <span className="min-w-0"><span className="block truncate text-sm font-medium">{l.title}</span><span className="text-xs text-muted">corte {l.cohort}</span></span>
                 <span className="flex items-center gap-3">{l.status && !l.validated && <StatusBadge status={l.status} />}{l.evaluationId ? <Link href={`/app/evaluaciones/${l.evaluationId}`}><Grade value={l.grade} /></Link> : <span className="text-sm text-muted">Sin evaluar</span>}</span>
               </li>
             ))}

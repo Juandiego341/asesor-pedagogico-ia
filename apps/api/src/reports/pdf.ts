@@ -15,7 +15,7 @@ export function reportPdf(r: any): Promise<Buffer> {
     const bullet = (t: string) => { ensure(24); doc.fillColor(C.ink).font('Helvetica').fontSize(10).text(`•  ${t}`, { indent: 8 }); };
     const ensure = (h: number) => { if (doc.y + h > doc.page.height - 60) doc.addPage(); };
 
-    doc.fillColor(C.muted).fontSize(9).text('Universidad de Manizales · Inteligencia Artificial · Cohortes 1 y 2');
+    doc.fillColor(C.muted).fontSize(9).text('Universidad de Manizales · Inteligencia Artificial · cortes 1 y 2');
     doc.moveDown(0.3).fillColor(C.ink).font('Helvetica-Bold').fontSize(20).text('Informe integrado del aprendizaje');
     doc.font('Helvetica').fontSize(11).fillColor(C.ink).text(`${r.student.name}${r.student.studentCode ? ` · Código ${r.student.studentCode}` : ''}`);
     doc.fontSize(9).fillColor(C.muted).text(`Generado el ${new Date(r.generatedAt).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}${r.includeUnpublished ? ' · Incluye valoraciones aún no publicadas' : ' · Solo valoraciones publicadas por el docente'}`);
@@ -33,7 +33,7 @@ export function reportPdf(r: any): Promise<Buffer> {
       cells.forEach((c, i) => { doc.font(bold ? 'Helvetica-Bold' : 'Helvetica').fontSize(9.5).fillColor(i === 2 && !bold ? color : C.ink).text(c, x + 2, y, { width: cols[i] - 4 }); x += cols[i]; });
       doc.y = Math.max(doc.y, y + 14); doc.moveTo(54, doc.y + 1).lineTo(54 + W, doc.y + 1).strokeColor(C.line).stroke(); doc.y += 4;
     };
-    row(['Cohorte', 'Laboratorio', 'Nota', 'Estado'], true);
+    row(['corte', 'Laboratorio', 'Nota', 'Estado'], true);
     r.labs.forEach((l: any) => row([String(l.cohort), l.title, fmt(l.grade), l.status ? ({ PUBLISHED: 'Publicada', APPROVED: 'Aprobada', PENDING_REVIEW: 'En revisión' } as any)[l.status] ?? l.status : 'Sin evaluar'], false, colorFor(l.grade)));
     doc.x = 54;
 

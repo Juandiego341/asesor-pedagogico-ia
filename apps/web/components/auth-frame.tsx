@@ -9,7 +9,7 @@ export function AuthFrame({ title, children, footer }: { title: string; children
           <p className="font-display text-3xl leading-snug">Cada nota se explica con evidencias del propio trabajo, y la última palabra la tiene el docente.</p>
           <p className="text-white/60 mt-4">Universidad de Manizales · Ingeniería de Sistemas y Telecomunicaciones</p>
         </blockquote>
-        <p className="text-white/50 text-sm">Curso de Inteligencia Artificial · Cohortes 1 y 2</p>
+        <p className="text-white/50 text-sm">Curso de Inteligencia Artificial · cortes 1 y 2</p>
       </div>
       <div className="flex items-center justify-center p-6">
         <div className="w-full max-w-sm">

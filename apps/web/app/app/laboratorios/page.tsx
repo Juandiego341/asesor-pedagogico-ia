@@ -35,7 +35,7 @@ export default function Labs() {
                   </Link>
                 </li>
               ))}
-              {!c.labs.length && <li className="text-muted">Esta cohorte aún no tiene laboratorios.</li>}
+              {!c.labs.length && <li className="text-muted">Esta corte aún no tiene laboratorios.</li>}
             </ul>
           </section>
         ))}

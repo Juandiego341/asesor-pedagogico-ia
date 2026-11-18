@@ -61,7 +61,7 @@ export default async function Home() {
         <div>
           <p className="text-teal-dark font-medium mb-4">Universidad de Manizales · Curso de Inteligencia Artificial</p>
           <h1 className="text-5xl sm:text-6xl font-semibold">Notas que se pueden explicar.</h1>
-          <p className="text-lg text-ink-2 mt-6 max-w-xl">Carga tus laboratorios de las cohortes 1 y 2 y recibe una valoración por criterio, sustentada en citas de tu propio trabajo, con recomendaciones concretas para mejorar. Tu docente revisa y aprueba cada resultado.</p>
+          <p className="text-lg text-ink-2 mt-6 max-w-xl">Carga tus laboratorios de las cortes 1 y 2 y recibe una valoración por criterio, sustentada en citas de tu propio trabajo, con recomendaciones concretas para mejorar. Tu docente revisa y aprueba cada resultado.</p>
           <div className="flex flex-wrap gap-3 mt-8">
             <Link href="/login" className="rounded-md bg-teal text-white px-5 py-2.5 font-medium hover:bg-teal-dark">Entrar a la plataforma</Link>
             <a href="#como" className="rounded-md border border-line bg-card px-5 py-2.5 font-medium hover:border-ink-2">Ver cómo se evalúa</a>

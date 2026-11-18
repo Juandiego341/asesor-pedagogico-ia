@@ -43,7 +43,7 @@ export type EvaluationOutput = z.infer<typeof evaluationOutputSchema>;
 
 export const learningPlanSchema = z.object({
   summary: z.string().describe('Síntesis del desempeño global y la evolución del aprendizaje'),
-  evolution: z.string().describe('Análisis de la evolución entre laboratorios y cohortes'),
+  evolution: z.string().describe('Análisis de la evolución entre laboratorios y cortes'),
   goals: z.array(z.object({
     competency: z.string(),
     currentLevel: z.string(),

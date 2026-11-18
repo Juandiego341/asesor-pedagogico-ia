@@ -10,18 +10,18 @@ export interface ProjectInfo { name: string; abstract: string; objectives: strin
 export const DEFAULT_PROJECT: ProjectInfo = {
   name: 'Asesor Pedagógico Inteligente',
   abstract:
-    'Plataforma web que permite a los estudiantes del curso de Inteligencia Artificial autoevaluar y fortalecer las competencias adquiridas en los laboratorios de las cohortes 1 y 2. ' +
+    'Plataforma web que permite a los estudiantes del curso de Inteligencia Artificial autoevaluar y fortalecer las competencias adquiridas en los laboratorios de las cortes 1 y 2. ' +
     'A partir de la descripción del laboratorio, su rúbrica y la solución entregada (informe PDF y código), modelos de IA configurables analizan las evidencias, valoran cada criterio citando fragmentos verificables y formulan retroalimentación y recomendaciones. ' +
     'La nota (0,0–5,0) la calcula el backend con las ponderaciones de la rúbrica; el código se verifica en un sandbox aislado y cada evaluación queda trazada y sujeta a aprobación docente. ' +
     'La plataforma consolida un informe integral del aprendizaje y un mapa mental interactivo de las temáticas de IA con el nivel de dominio alcanzado.',
   objectives: [
     'Valorar de forma consistente, explicable y trazable cada laboratorio frente a su rúbrica.',
     'Identificar competencias adquiridas, conocimientos aplicados y brechas de aprendizaje.',
-    'Consolidar la evolución del estudiante entre cohortes con un plan de fortalecimiento.',
+    'Consolidar la evolución del estudiante entre cortes con un plan de fortalecimiento.',
     'Generar confianza en los resultados de la IA mediante verificación técnica y supervisión docente.',
   ],
   features: [
-    'Portafolio académico por estudiante, cohorte y laboratorio',
+    'Portafolio académico por estudiante, corte y laboratorio',
     'Gestión e interpretación de rúbricas con detección de inconsistencias',
     'Evaluación inteligente con evidencias citadas y verificadas',
     'Verificación de código en sandbox: sintaxis, análisis estático y pruebas',

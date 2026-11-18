@@ -1,6 +1,6 @@
 # Asesor Pedagógico Inteligente
 
-Plataforma web para autoevaluar y fortalecer las competencias de los laboratorios de las cohortes 1 y 2 del curso de Inteligencia Artificial (Universidad de Manizales · Profundización I).
+Plataforma web para autoevaluar y fortalecer las competencias de los laboratorios de las cortes 1 y 2 del curso de Inteligencia Artificial (Universidad de Manizales · Profundización I).
 
 La IA valora cada criterio de la rúbrica citando evidencias del trabajo del estudiante. Esas citas se verifican automáticamente, el código se revisa en un sandbox aislado y la nota (0,0 – 5,0) la calcula el backend con las ponderaciones de la rúbrica. El docente revisa, ajusta y aprueba cada valoración antes de publicarla.
 

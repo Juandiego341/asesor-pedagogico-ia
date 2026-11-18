@@ -10,7 +10,7 @@ import { CODE, REPORTS } from './seed-content';
 import { validateRubric } from './rubrics/rubric';
 import { extractPdfText, readCodeZip, sha256 } from './evidence/extract';
 
-/** Arranque mínimo: crea el administrador inicial y las cohortes si la base está vacía. */
+/** Arranque mínimo: crea el administrador inicial y las cortes si la base está vacía. */
 export async function ensureBootstrap() {
   const db = createDb();
   try {
@@ -21,7 +21,7 @@ export async function ensureBootstrap() {
       await db.insert(users).values({ email, name: 'Administrador', role: 'ADMIN', passwordHash: await bcrypt.hash(password, 10) });
       console.log(`Administrador inicial creado: ${email}`);
     }
-    await db.insert(cohorts).values([{ number: 1, name: 'Cohorte 1', period: '2026-1' }, { number: 2, name: 'Cohorte 2', period: '2026-2' }]).onConflictDoNothing();
+    await db.insert(cohorts).values([{ number: 1, name: 'corte 1', period: '2026-1' }, { number: 2, name: 'corte 2', period: '2026-2' }]).onConflictDoNothing();
     const [{ t }] = await db.select({ t: count() }).from(teamMembers);
     if (t === 0) {
       await db.insert(teamMembers).values([

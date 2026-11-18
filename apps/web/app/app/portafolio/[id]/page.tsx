@@ -15,7 +15,7 @@ export default function Portfolio({ params }: { params: Promise<{ id: string }> 
   if (error) return <ErrorBox error={error} />;
   return (
     <>
-      <PageHead title={`Portafolio de ${data.student.name}`} subtitle={`${data.student.studentCode ? `Código ${data.student.studentCode} · ` : ''}Evidencias por cohorte y laboratorio, con la versión de rúbrica asociada a cada entrega.`}
+      <PageHead title={`Portafolio de ${data.student.name}`} subtitle={`${data.student.studentCode ? `Código ${data.student.studentCode} · ` : ''}Evidencias por corte y laboratorio, con la versión de rúbrica asociada a cada entrega.`}
         actions={<>
           <Link href={`/app/informe/${id}`} className="rounded-md border border-line bg-card px-4 py-2 font-medium hover:border-ink-2">Informe integrado</Link>
           <Link href={`/app/entregas/nueva?student=${id}`} className="rounded-md bg-teal text-white px-4 py-2 font-medium hover:bg-teal-dark">Nueva entrega</Link>

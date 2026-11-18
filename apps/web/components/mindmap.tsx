@@ -135,7 +135,7 @@ function Map({ data }: { data: any }) {
               <ul className="space-y-3 text-sm">
                 {sel.item.labs.map((l: any) => (
                   <li key={l.labId} className="border-l-2 pl-3" style={{ borderColor: fill(l.mastery) }}>
-                    <p className="font-medium">{l.title} <span className="text-muted">· Cohorte {l.cohort}</span></p>
+                    <p className="font-medium">{l.title} <span className="text-muted">· corte {l.cohort}</span></p>
                     <p className="text-ink-2">{l.evidence}</p>
                     {l.gaps && <p className="text-low mt-0.5">Profundizar: {l.gaps}</p>}
                     {l.evaluationId && <a className="text-teal text-xs hover:underline" href={`/app/evaluaciones/${l.evaluationId}`}>Ver evaluación</a>}

@@ -152,7 +152,7 @@ export class SubmissionsController {
     res.send(f.data);
   }
 
-  /** Portafolio académico: cohortes → laboratorios → entrega más reciente y estado de evaluación. */
+  /** Portafolio académico: cortes → laboratorios → entrega más reciente y estado de evaluación. */
   @Get('portfolio/:studentId')
   async portfolio(@CurrentUser() user: AuthUser, @Param('studentId') studentId: string) {
     assertStudentScope(user, studentId);
